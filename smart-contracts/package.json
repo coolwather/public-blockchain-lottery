@@ -5,6 +5,7 @@
     "hardhat": "^2.13.0"
   },
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile"
   }
 }
