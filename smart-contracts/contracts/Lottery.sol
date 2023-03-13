@@ -7,6 +7,7 @@ contract Lottery {
     event GameCreated(uint gameId);
     event EnteredGame(uint gameId, uint gamePrize, uint qtdPlayers);
     event GamePlayed(uint gameId, address winner, uint prize);
+    event LotteryFeeUpdated(uint oldValue, uint newValue, address manager);
 
     uint private lotteryFeeValue = 10;
     uint private lotteryFees;
@@ -106,7 +107,76 @@ contract Lottery {
         emit GamePlayed(_gameId, winner, Games[_gameId].prize);
     }
 
-    function getManager() public view returns (address) {
+    function getAllGames() public view returns(Game[] memory) {
+        Game[] memory games = new Game[](gameId);
+
+        for(uint i = 1; i <= gameId; i++) {
+            games[i - 1] = Games[i];
+        }
+
+        return games;
+    }
+
+    function getRaffledGames() public view returns(Game[] memory) {
+        uint size;
+
+        for(uint i = 1; i <= gameId; i++) {
+            if(Games[i].raffled) {
+                size++;
+            }
+        }
+
+        Game[] memory raffledGames = new Game[](size);
+        uint position = 0;
+        for(uint i = 1; i <= gameId; i++) {
+            if(Games[i].raffled) {
+                raffledGames[position] = Games[i];
+                position++;
+            }
+        }
+
+        return raffledGames;
+    }
+
+    function getNotRaffledGames() public view returns(Game[] memory) {
+        uint size;
+
+        for(uint i = 1; i <= gameId; i++) {
+            if(!Games[i].raffled) {
+                size++;
+            }
+        }
+
+        Game[] memory raffledGames = new Game[](size);
+        uint position = 0;
+        for(uint i = 1; i <= gameId; i++) {
+            if(!Games[i].raffled) {
+                raffledGames[position] = Games[i];
+                position++;
+            }
+        }
+
+        return raffledGames;
+    }
+
+    function updateLotteryFeeValue(uint _newValue) public onlyAdmin {
+        require(_newValue >= 5 && _newValue <= 25, "Lottery: Fee should be between 5 and 25 percent");
+
+        uint oldValue = lotteryFeeValue;
+        lotteryFeeValue = _newValue;
+
+        emit LotteryFeeUpdated(oldValue, _newValue, msg.sender);
+    }
+
+    function getLotteryFeeValue() public view onlyAdmin returns (uint) {
+        return lotteryFeeValue;
+    }
+
+    function getLotteryFees() public view onlyAdmin returns(uint) {
+        return lotteryFees;
+    }
+
+    function getManager() public view onlyAdmin returns (address) {
         return manager;
     }
 
