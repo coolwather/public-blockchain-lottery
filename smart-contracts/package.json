@@ -6,6 +6,10 @@
   },
   "scripts": {
     "test": "npx hardhat test",
-    "compile": "npx hardhat compile"
+    "compile": "npx hardhat compile",
+    "deploy:goerli": "npx hardhat run scripts/deploy.ts --network goerli"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
   }
 }
